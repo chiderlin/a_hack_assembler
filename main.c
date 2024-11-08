@@ -220,16 +220,16 @@ Keyword get_AMD_type(char *str){
     };
     const int keyword_count = sizeof(keyword_strings)/ sizeof(keyword_strings[0]);
     for(int i=0; i<keyword_count; i++){
-        if(strcmp(str, 'A') == 0) {
-            str = 'KW_A';
+        if(strcmp(str, "A") == 0) {
+            str = "KW_A";
         }
         
-        if(strcmp(str, 'D') == 0) {
-            str = 'KW_D';
+        if(strcmp(str, "D") == 0) {
+            str = "KW_D";
         }
         
-        if(strcmp(str, 'M') == 0) {
-            str = 'KW_M';
+        if(strcmp(str, "M") == 0) {
+            str = "KW_M";
         }
 
         if(strcmp(str, keyword_strings[i]) == 0){
