@@ -6,7 +6,7 @@
 #include "token.h"
 
 Keyword get_keyword_type(char *str);
-Keyword get_AMD_type(char *str);
+Keyword get_AMD_type(char str);
 bool check_if_equal_exist(char *line);
 
 
@@ -89,7 +89,7 @@ void lex_line(int *rom_address, SymbolTable *labels, const char *line, FILE *out
 
         // INSERT CODE: If you see whitespace, ignore it.
         if(line[pos] == ' '){
-            break; // TODO not this
+            pos += 1;
         }
 
         // INSERT CODE: If you see a comment, ignore the rest of the line.
@@ -112,15 +112,15 @@ void lex_line(int *rom_address, SymbolTable *labels, const char *line, FILE *out
 
     if (tokens_on_line) {
         // INSERT CODE: If the 
-// Lexing functionsline you just lexed contained tokens (i.e. if it corresponds to a line of machine code),
+        // Lexing functionsline you just lexed contained tokens (i.e. if it corresponds to a line of machine code),
         // lex the newline at the end and update rom_address.
+        Token *newline_token = malloc_token();
+        printf("pos:%d \n", pos);
+        pos += lex_token(newline_token, line + pos);
+        printf("after pos:%d \n", pos);
+        write_token(newline_token, output);
+        free_token(newline_token);
         (*rom_address)++; 
-        // Token *newline_token = malloc_token();
-        // printf("pos:%d \n", pos);
-        // pos += lex_token(newline_token, line + pos);
-        // printf("after pos:%d \n", pos);
-        // write_token(newline_token, output);
-        // free_token(newline_token);
     }
 }
 
@@ -143,8 +143,8 @@ void lex_label(const char *line, int rom_address, SymbolTable *labels) {
 // in that token.
 int lex_token(Token *dest, const char *line) {
     int len = strlen(line);
-    printf("in lex_token line len:%d\n", len);
-    printf("line: %s", line);
+    // printf("in lex_token line len:%d\n", len);
+    printf("lex_token line: %s", line);
     static bool at_previous = false; // Will be set to 1 if the last time this function was called, it lexed an @.
     int length;
     char str[MAX_LINE_LENGTH] = {0};
@@ -169,20 +169,6 @@ int lex_token(Token *dest, const char *line) {
     } 
     else if(line[0] >= 'A' && line[0] <= 'Z') {
         // INSERT CODE: Fill in the rest of the cases for keywords and identifiers.
-
-        // bool is_formula = check_if_equal_exist(line);
-
-        // // D=A
-        if(!at_previous){
-            Keyword keyword = get_AMD_type(str);
-            if(keyword != -1){
-                dest->type = KEYWORD;
-                dest->value.key_val = keyword;
-            }
-            length = 1;
-        }
-
-
         // lable || variable
         if(at_previous){
             Keyword keyword = get_keyword_type(str);
@@ -196,6 +182,16 @@ int lex_token(Token *dest, const char *line) {
             length = len;
         }
 
+        printf("at_previous: %s\n", at_previous? "true": "false");
+        // D=A
+        dest->type = KEYWORD;
+        if(line[0] == 'A' || line[0] == 'M' || line[0] == 'D'){
+            dest->value.char_val = line[0];
+        }
+
+    } else {
+        dest->type = NEWLINE;
+        length = 1;
     }
 
     at_previous = (line[0] == '@');
@@ -214,13 +210,13 @@ bool check_if_equal_exist(char *line)
 
 }
 
-Keyword get_AMD_type(char *str){
+Keyword get_AMD_type(char str){
     const char *keyword_strings[] = {
         "KW_A", "KW_D", "KW_M",
     };
     const int keyword_count = sizeof(keyword_strings)/ sizeof(keyword_strings[0]);
     for(int i=0; i<keyword_count; i++){
-        if(strcmp(str, "A") == 0) {
+        if(str == "A") {
             str = "KW_A";
         }
         
