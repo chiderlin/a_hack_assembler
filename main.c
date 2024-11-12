@@ -186,7 +186,19 @@ int lex_token(Token *dest, const char *line) {
         // D=A
         dest->type = KEYWORD;
         if(line[0] == 'A' || line[0] == 'M' || line[0] == 'D'){
-            dest->value.char_val = line[0];
+            switch (line[0]){
+            case 'A':
+                dest->value.key_val = KW_A;
+                break;
+            case 'M':
+                dest->value.key_val = KW_M;
+                break;
+            case 'D':
+                dest->value.key_val = KW_D;
+                break;
+            }
+            length = 1;
+            // dest->value.char_val = line[0];
         }
 
     } else {
@@ -210,31 +222,6 @@ bool check_if_equal_exist(char *line)
 
 }
 
-Keyword get_AMD_type(char str){
-    const char *keyword_strings[] = {
-        "KW_A", "KW_D", "KW_M",
-    };
-    const int keyword_count = sizeof(keyword_strings)/ sizeof(keyword_strings[0]);
-    for(int i=0; i<keyword_count; i++){
-        if(str == "A") {
-            str = "KW_A";
-        }
-        
-        if(strcmp(str, "D") == 0) {
-            str = "KW_D";
-        }
-        
-        if(strcmp(str, "M") == 0) {
-            str = "KW_M";
-        }
-
-        if(strcmp(str, keyword_strings[i]) == 0){
-            return (Keyword)i;
-        }
-    }
-
-    return -1;
-}
 
 
 Keyword get_keyword_type(char *str){
