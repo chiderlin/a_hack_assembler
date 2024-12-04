@@ -2,10 +2,10 @@
 #include <stdbool.h>
 
 enum TokenType {
-    SYMBOL, // '@', '+', '-', '&'....
-    KEYWORD, //'A', 'D', 'M', 'KBD', 'SCREEN', 'R0' to 'R15'
-    INTEGER_LITERAL, // base-10 integer 0-32767
-    IDENTIFIER, // any string containing no whitespace and not a keyword
+    SYMBOL,
+    KEYWORD,
+    INTEGER_LITERAL,
+    IDENTIFIER,
     NEWLINE
 }; typedef enum TokenType TokenType;
 
@@ -16,8 +16,7 @@ enum Keyword {
     KW_A, KW_D, KW_M
 }; typedef enum Keyword Keyword;
 
-/*
-A union is a special type that uses one spot in memory to store one of several
+/* A union is a special type that uses one spot in memory to store one of several
  * different variables of different types. Here, TokenData can store either a Keyword,
  * an int, a character, or a string. Assigning to e.g. key_val will overwrite what's
  * stored in int_val, and there's no built-in way to tell whether what's currently stored
@@ -27,33 +26,13 @@ A union is a special type that uses one spot in memory to store one of several
  *      data.int_val = 42; printf("%d", data.int_val); // Prints 42.
  *      data.char_val = '@'; printf("%c", data.char_val); // Prints '@'.
  *      data.char_val = '@'; printf("%d", data.int_val); // Prints 64 (the ASCII value of @).
- * 
- * ME:
- * replacing the value of TokenData object 
- * 
-*/
-
-
-
+ */
 union TokenData {
     Keyword key_val;
     int int_val;
     char char_val;
     char *str_val;
 }; typedef union TokenData TokenData;
-
-
-/*
-Token looks like:
-Token1: (type=Keyword, value=D)
-Token2: (type=Symbol, value=;)
-Token3: (type=Keyword, value=JGT)
-Token4: (type=Newline, value=None)
-
-*/
-
-
-
 
 struct Token {
     TokenType type;
