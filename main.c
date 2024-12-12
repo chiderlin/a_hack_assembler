@@ -42,11 +42,11 @@ int main(int argc, char *argv[]) {
     if (lex_output == NULL) {
         exit(EXIT_FAILURE);
     }
-    lex_file(labels, input, lex_output);
+    lex_file(labels, input, lex_output);// after lexing, generating .lex file (token data)
     fclose(input);
     fclose(lex_output);
 
-    FILE *lex_input = fopen("temp.lex", "r");
+    FILE *lex_input = fopen("temp.lex", "r"); // read .lex file, pass it into parse_file()
     if (lex_input == NULL) {
         exit(EXIT_FAILURE);
     }
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     if (output == NULL) {
         exit(EXIT_FAILURE);
     }
-    parse_file(labels, variables, lex_input, output);
+    parse_file(labels, variables, lex_input, output); // read lex_input, generate,write output
     fclose(lex_input);
     fclose(output);
 
@@ -118,6 +118,7 @@ void lex_line(int *rom_address, SymbolTable *labels, const char *line, FILE *out
 
 // Assuming line contains a label and starts with "(" (so no leading whitespace), extracts the label and adds it to
 // the symbol table with ROM address rom_address. The line may end with a comment (e.g. "(LOOP) // Loop here").
+//NOTE: add_to_table here!! (symbol table)
 void lex_label(const char *line, int rom_address, SymbolTable *labels) {
     int label_end_pos = 0;
     while(line[label_end_pos] != ')') {
@@ -254,6 +255,11 @@ int get_next_instruction(Token *dest[], FILE *input) {
 }
 
 // Parse the given instruction (containing length operands) and write the corresponding Hack code to the output file.
+/**
+ * NOTE:
+ A instruction use variable table (symbol table)
+ C instruction not use symbol table!
+ */
 void parse_instruction(const SymbolTable *labels, SymbolTable *variables, Token *instruction[], int length,
                        FILE *output) {
     char hack_instruction[18] = "";
